@@ -10,6 +10,12 @@ function revealVisible(){
   });
 }
 
+var cfPlaceholders = {
+  name:{ th:'ชื่อ', en:'Name' },
+  email:{ th:'อีเมล', en:'Email' },
+  message:{ th:'ข้อความ', en:'Message' }
+};
+
 function setLang(lang){
   document.documentElement.setAttribute('data-active', lang);
   document.documentElement.setAttribute('lang', lang);
@@ -18,6 +24,14 @@ function setLang(lang){
   if(thBtn) thBtn.classList.toggle('active', lang==='th');
   if(enBtn) enBtn.classList.toggle('active', lang==='en');
   try{ localStorage.setItem('portfolio-lang', lang); }catch(e){}
+
+  var cfName = document.getElementById('cf-name');
+  var cfEmail = document.getElementById('cf-email');
+  var cfMessage = document.getElementById('cf-message');
+  if(cfName) cfName.placeholder = cfPlaceholders.name[lang];
+  if(cfEmail) cfEmail.placeholder = cfPlaceholders.email[lang];
+  if(cfMessage) cfMessage.placeholder = cfPlaceholders.message[lang];
+
   // language just changed: reveal anything now visible (avoids invisible-on-toggle)
   requestAnimationFrame(revealVisible);
 }
