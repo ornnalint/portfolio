@@ -1,5 +1,5 @@
 :root{
-  --bg:#FFFFFF; --ink:#141414; --muted:#6B6B6B; --faint:#9B9B9B;
+  --bg:#FFFFFF; --ink:#141414; --muted:#6B6B6B; --faint:#767676;
   --line:#ECECEC; --wash:#F7F6F4; --accent:#B4552A; --accent-soft:#F6ECE5;
   --todo:#FFF8DC; --todo-ink:#9A7B00;
   --t-content:#E7EFEA; --t-content-ink:#2C5344;
@@ -12,6 +12,18 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
+
+/* ===== keyboard focus =====
+   :focus-visible only, so a mouse click never draws the ring but Tab always does. */
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:3px}
+.gcard:focus-visible,.scard:focus-visible{outline:2px solid var(--accent);outline-offset:4px}
+.contact-form input:focus-visible,.contact-form textarea:focus-visible{
+  outline:2px solid var(--accent);outline-offset:1px;border-color:var(--accent)}
+.langsw button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+/* skip link — first Tab stop, hidden until focused */
+.skip{position:absolute;left:-9999px;top:0;z-index:100;background:var(--ink);color:#fff;
+  padding:12px 20px;border-radius:0 0 8px 0;font-size:.85rem;font-weight:500;text-decoration:none}
+.skip:focus{left:0}
 body{
   font-family:'IBM Plex Sans','IBM Plex Sans Thai',-apple-system,'Segoe UI',sans-serif;
   background:var(--bg);color:var(--ink);font-weight:400;line-height:1.75;font-size:16px;
@@ -83,7 +95,8 @@ section[id]{scroll-margin-top:110px}
 #work,#about,#contact{padding-top:80px}
 .label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);margin-bottom:44px;font-weight:500}
 h2{font-size:1.5rem;font-weight:500;line-height:1.45;letter-spacing:-.02em;margin-bottom:16px}
-h3{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:44px 0 14px}
+h1.case-title{font-weight:500;line-height:1.35;letter-spacing:-.02em}
+h3,h2.sec-label{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--faint);font-weight:500;margin:44px 0 14px;line-height:1.6}
 p{margin-bottom:16px;font-weight:300;color:#333}
 p b,li b{font-weight:500;color:var(--ink)}
 ul{list-style:none}
@@ -109,7 +122,8 @@ section{padding:200px 0}
 .gthumb:has(img) .cat{background:rgba(255,255,255,.92)}
 .gbody{padding:18px 20px 22px}
 .gbody .sub{font-size:.8rem;color:var(--faint);font-weight:300;margin-bottom:8px}
-.gbody h4{font-size:1.02rem;font-weight:500;line-height:1.35;margin-bottom:12px}
+.gbody h3.card-title{font-size:1.02rem;font-weight:500;line-height:1.35;margin:0 0 12px;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink)}
 .gchips{display:flex;flex-wrap:wrap;gap:7px}
 .gchip{font-size:.75rem;color:var(--muted);border:1px solid var(--line);padding:4px 10px;border-radius:100px;font-weight:400}
 .gchip.on{color:var(--ink);border-color:var(--ink);font-weight:500}
@@ -141,7 +155,8 @@ section{padding:200px 0}
 .scard-main{flex:1}
 .scard-main .scard-cat{display:block;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;
   color:var(--faint);font-weight:500;margin-bottom:8px}
-.scard-main h4{font-size:1rem;font-weight:500;margin-bottom:6px}
+.scard-main h3.card-title{font-size:1rem;font-weight:500;margin:0 0 6px;line-height:1.35;
+  letter-spacing:-.01em;text-transform:none;color:var(--ink)}
 .scard-main p{font-size:.85rem;color:var(--muted);font-weight:300;margin:0}
 .scard-arrow{font-size:1.2rem;color:var(--faint);flex-shrink:0}
 .scard:hover .scard-arrow{color:var(--ink)}
@@ -183,6 +198,8 @@ html[data-active="en"] a.back[data-lang="en"]{display:inline-block}
 /* หลายรูปเรียงเป็นแถว (2–3 รูป/แถว) */
 .figrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:24px 0}
 .figrow img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid var(--line);display:block}
+.figrow-portrait{grid-template-columns:repeat(3,1fr);max-width:560px}
+.figrow-portrait img{aspect-ratio:9/16}
 @media(max-width:560px){.figrow{grid-template-columns:1fr 1fr}}
 .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:22px;
   padding:24px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:34px}
@@ -223,7 +240,9 @@ html[data-active="en"] .btn-resume[data-lang="en"]{display:inline-block}
 .contact-form input,.contact-form textarea{
   width:100%;font-family:inherit;font-size:.9rem;padding:12px 14px;border:1px solid var(--line);
   border-radius:8px;background:var(--wash);color:var(--ink);resize:vertical}
-.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:var(--ink)}
+.contact-form input:focus,.contact-form textarea:focus{border-color:var(--ink)}
+.contact-form input:focus:not(:focus-visible),
+.contact-form textarea:focus:not(:focus-visible){outline:none}
 .contact-form textarea{min-height:110px;margin-bottom:14px}
 .contact-form button{
   border:0;background:var(--ink);color:#fff;padding:12px 26px;border-radius:100px;
@@ -233,6 +252,15 @@ html[data-active="en"] .btn-resume[data-lang="en"]{display:inline-block}
 .cf-status.ok{color:#2C5344}
 .cf-status.err{color:#B4552A}
 @media(max-width:640px){.cf-row{grid-template-columns:1fr}}
+
+/* visible labels — placeholders alone aren't accessible and vanish while typing */
+.cf-field{display:flex;flex-direction:column;gap:6px;margin-bottom:12px}
+.cf-label{font-size:.78rem;font-weight:500;color:var(--muted);letter-spacing:.01em}
+html[data-active="th"] .cf-label span[data-lang="th"],
+html[data-active="en"] .cf-label span[data-lang="en"]{display:inline}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:var(--faint)}
+/* honeypot: off-screen rather than display:none, which some bots detect */
+.cf-trap{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 
 footer{padding:100px 0 96px;border-top:2px solid var(--line)}
 footer p{font-size:.8rem;color:var(--faint);margin-bottom:6px}
@@ -247,8 +275,32 @@ html.js .reveal-group.in > *:nth-child(2){transition-delay:.08s}
 html.js .reveal-group.in > *:nth-child(3){transition-delay:.16s}
 html.js .reveal-group.in > *:nth-child(4){transition-delay:.24s}
 html.js .reveal-group.in > *:nth-child(5){transition-delay:.32s}
+/* failsafe: if the observer never fires, nothing stays invisible */
+html.js .reveal.force-in,html.js .reveal-group.force-in>*,html.js .reveal-group>*.force-in{opacity:1;transform:none}
+
 @media(prefers-reduced-motion:reduce){
   html.js .reveal,html.js .reveal-group>*{opacity:1;transform:none;transition:none}
+}
+
+/* ===== mobile motion tuning =====
+   On a phone the viewport is short and sections stack into one tall column,
+   so the desktop settings feel wrong: the travel distance is too far, the
+   easing too slow, and a whole staggered group fires while most of its cards
+   are still below the fold. On mobile each card animates on its own instead. */
+@media(max-width:640px){
+  /* shorter travel + quicker easing: 28px/.7s reads as sluggish on a phone */
+  html.js .reveal{transform:translateY(16px);transition-duration:.52s}
+  html.js .reveal-group>*{transform:translateY(16px);transition-duration:.44s}
+  /* tighter stagger so the last card isn't a third of a second late */
+  html.js .reveal-group.in>*:nth-child(2){transition-delay:.05s}
+  html.js .reveal-group.in>*:nth-child(3){transition-delay:.1s}
+  html.js .reveal-group.in>*:nth-child(4){transition-delay:.15s}
+  html.js .reveal-group.in>*:nth-child(5){transition-delay:.2s}
+  /* groups taller than the viewport (single-column stacks) get flagged
+     .per-item by JS — their children animate as each one scrolls in,
+     instead of all firing while most are still below the fold */
+  html.js .reveal-group.per-item.in>*{opacity:0;transform:translateY(16px);transition-delay:0s}
+  html.js .reveal-group.per-item>*.in{opacity:1;transform:none}
 }
 
 /* ===== tablet ===== */
@@ -278,7 +330,8 @@ html.js .reveal-group.in > *:nth-child(5){transition-delay:.32s}
   .gallery{grid-template-columns:1fr;gap:16px}
   .figures{grid-template-columns:1fr 1fr;gap:20px}
   .roles{grid-template-columns:1fr;gap:16px;padding:20px 0}
-  .pagenav{flex-direction:column;gap:14px}
+  .pagenav{flex-direction:row;flex-wrap:wrap;gap:14px 20px}
+  .pagenav a:last-child{margin-left:auto}
   .scard{padding:18px}
   h2{font-size:1.35rem}
 }

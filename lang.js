@@ -1,7 +1,7 @@
 document.documentElement.classList.add('js');
 
 function revealVisible(){
-  var els = document.querySelectorAll('.reveal, .reveal-group');
+  var els = document.querySelectorAll('.reveal, .reveal-group, .reveal-group.per-item > *');
   var vh = window.innerHeight || document.documentElement.clientHeight;
   els.forEach(function(el){
     if(el.classList.contains('in')) return;
@@ -41,20 +41,62 @@ function setLang(lang){
   setLang(saved);
 })();
 
-/* ===== scroll reveal (worachet-style) ===== */
+/* ===== scroll reveal ===== */
 (function(){
+  var MOBILE = window.matchMedia('(max-width:640px)');
+
   function init(){
     var targets = document.querySelectorAll('.reveal, .reveal-group');
-    if('IntersectionObserver' in window && targets.length){
-      var io = new IntersectionObserver(function(entries){
-        entries.forEach(function(e){
-          if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }
-        });
-      }, { threshold: 0.12, rootMargin: '0px 0px -8% 0px' });
-      targets.forEach(function(el){ io.observe(el); });
-    } else {
+    if(!('IntersectionObserver' in window) || !targets.length){
       targets.forEach(function(el){ el.classList.add('in'); });
+      return;
     }
+
+    var vh = window.innerHeight || document.documentElement.clientHeight;
+    var isMobile = MOBILE.matches;
+
+    /* threshold 0 (not 0.12): a section taller than ~8x the viewport can never
+       reach a 12% ratio, so on a phone those sections used to never appear. */
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0, rootMargin: isMobile ? '0px 0px -6% 0px' : '0px 0px -10% 0px' });
+
+    targets.forEach(function(el){ io.observe(el); });
+
+    /* On mobile, a group taller than the viewport would fire its whole stagger
+       while most children are still off-screen — so reveal those children one
+       at a time instead. Re-checked after load because image heights change
+       the measurement. */
+    function flagTallGroups(){
+      if(!MOBILE.matches) return;
+      var h = window.innerHeight || vh;
+      document.querySelectorAll('.reveal-group').forEach(function(el){
+        if(el.classList.contains('per-item')) return;
+        var kids = el.children;
+        if(kids.length < 2 || el.getBoundingClientRect().height <= h * 0.9) return;
+        el.classList.add('per-item');
+        for(var i = 0; i < kids.length; i++){
+          if(!kids[i].classList.contains('in')) io.observe(kids[i]);
+        }
+      });
+    }
+    flagTallGroups();
+
+    /* failsafe: never leave content invisible if the observer misbehaves */
+    window.addEventListener('load', function(){
+      flagTallGroups();
+      setTimeout(function(){
+        var h = window.innerHeight || vh;
+        document.querySelectorAll('.reveal, .reveal-group, .reveal-group.per-item > *').forEach(function(el){
+          var r = el.getBoundingClientRect();
+          if(r.top < h && r.bottom > 0) el.classList.add('in');
+        });
+      }, 400);
+    });
 
     /* nav: condense brand on scroll */
     var nav = document.querySelector('nav');
@@ -72,8 +114,24 @@ function setLang(lang){
 (function(){
   var form = document.getElementById('contact-form');
   if(!form) return;
+
+  /* spam trap #2: stamp the load time, then reject anything submitted
+     implausibly fast. Bots fill and post in well under a second. */
+  var loadStamp = form.querySelector('#cf-loadtime');
+  if(loadStamp) loadStamp.value = String(Date.now());
+
   form.addEventListener('submit', function(e){
     e.preventDefault();
+
+    var trap = form.querySelector('input[name="_gotcha"]');
+    var tooFast = loadStamp && (Date.now() - Number(loadStamp.value)) < 3000;
+    if((trap && trap.value) || tooFast){
+      /* silently pretend it worked — never tell a bot why it failed */
+      form.reset();
+      if(loadStamp) loadStamp.value = String(Date.now());
+      return;
+    }
+
     var statusEls = form.querySelectorAll('.cf-status');
     var lang = document.documentElement.getAttribute('data-active') || 'th';
     var msgSending = { th:'กำลังส่ง...', en:'Sending...' };
