@@ -49,7 +49,7 @@ nav.scrolled .brand-short{display:inline}
 .nav-links{display:flex;gap:26px;font-size:.85rem;align-items:center}
 .nav-links a{color:var(--muted);text-decoration:none}
 .nav-links a:hover{color:var(--ink)}
-.langsw{display:flex;border:1px solid var(--line);border-radius:100px;padding:3px;gap:2px}
+.langsw{display:flex;border:1px solid var(--line);border-radius:100px;padding:3px;gap:2px;margin-left:auto}
 .langsw button{border:0;background:transparent;font-family:inherit;font-size:.78rem;font-weight:500;
   padding:5px 12px;border-radius:100px;cursor:pointer;color:var(--faint);transition:.15s}
 .langsw button.active{background:var(--ink);color:#fff}
@@ -320,7 +320,7 @@ html.js .reveal.force-in,html.js .reveal-group.force-in>*,html.js .reveal-group>
   body{font-size:15px}
   .wrap{padding:0 20px}
   .nav-in{padding:13px 20px;gap:10px}
-  .nav-links{gap:16px;font-size:.8rem}
+  .nav-links{gap:16px;font-size:.8rem;width:100%}
   .brand{font-size:.88rem}
   section{padding:66px 0}
   section[id]{scroll-margin-top:76px}
@@ -329,7 +329,7 @@ html.js .reveal.force-in,html.js .reveal-group.force-in>*,html.js .reveal-group>
   header{padding:44px 0 34px}
   .hero-name{font-size:clamp(2rem,9vw,2.6rem)}
   .hero-role{font-size:1.12rem}
-  .hero-avatar{width:104px;height:104px}
+  .hero-avatar{width:140px;height:140px}
   .strip{gap:22px;padding:26px 0;margin-top:38px}
   .gallery{grid-template-columns:1fr;gap:16px}
   .figures{grid-template-columns:1fr 1fr;gap:20px}
