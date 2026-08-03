@@ -17,6 +17,10 @@ var cfPlaceholders = {
 };
 
 function setLang(lang){
+  if(lang === 'th'){
+    alert('Thai version is coming soon! Currently displaying in English.');
+    return;
+  }
   document.documentElement.setAttribute('data-active', lang);
   document.documentElement.setAttribute('lang', lang);
   var thBtn = document.getElementById('btn-th');
@@ -36,9 +40,9 @@ function setLang(lang){
   requestAnimationFrame(revealVisible);
 }
 (function(){
-  var saved = 'th';
-  try{ saved = localStorage.getItem('portfolio-lang') || 'th'; }catch(e){}
-  setLang(saved);
+  /* Thai isn't ready yet — always start in English regardless of any
+     previously saved preference, and setLang() blocks switching to 'th'. */
+  setLang('en');
 })();
 
 /* ===== scroll reveal ===== */
